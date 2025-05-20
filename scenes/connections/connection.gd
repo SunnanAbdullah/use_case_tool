@@ -9,8 +9,8 @@ class_name Connection extends Line2D
 @onready var collision_shape_2d: CollisionShape2D = $Area2D/CollisionShape2D
 
 func _input(event: InputEvent) -> void:
-	if event is InputEvent and event.is_action_pressed('delete') :
-		queue_free()
+	if event is InputEvent and event.is_action_pressed('delete') and is_selected :
+		self.queue_free()
 	if event is InputEventMouseButton and is_selected and event.button_index == MOUSE_BUTTON_RIGHT :
 		is_selected = false
 
