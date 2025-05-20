@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://cji1quhrkolns"]
+
+[ext_resource type="Script" uid="uid://do5xekmx8hki0" path="res://scenes/connections/connection.gd" id="1_bgeee"]
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_bgeee"]
+b = Vector2(0, 0)
+
+[node name="connection" type="Line2D"]
+points = PackedVector2Array(0, 0, 0, 0)
+script = ExtResource("1_bgeee")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("SegmentShape2D_bgeee")
+one_way_collision_margin = 0.0
+debug_color = Color(0.975706, 0.156124, 0, 0.42)
+
+[connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]

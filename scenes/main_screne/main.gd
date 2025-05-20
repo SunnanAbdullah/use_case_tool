@@ -3,6 +3,7 @@ extends Node2D
 
 const MENU_ITEM = preload('res://scenes/menu_item/menu_item.tscn')
 const CANVAS_ITEM = preload('res://scenes/canvas_item/canvas_item.tscn')
+const CONNECTION = preload('res://scenes/connections/connection.tscn')
 
 
 @onready var canvas_item_collection: Node2D = $canvas_item_collection
@@ -14,6 +15,8 @@ var is_drawing : bool = false
 var selected_item : Canvas_Item
 
 
+var connection_array : Array[Canvas_Item] = []
+
 var lp1 : Vector2 = Vector2.ZERO 
 var lp2 : Vector2 = Vector2.ZERO
 
@@ -24,7 +27,8 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	dropitem()
-	create_connection()
+	create_connectiona()
+	#create_connection()
 
 func dropitem():
 	if is_mouse_busy and not is_drawing :
@@ -36,19 +40,6 @@ func dropitem():
 
 
 func create_connection():
-	#if not is_mouse_busy and Input.is_action_just_pressed('right_click') :
-		#is_mouse_busy = true
-		#lp1 = get_global_mouse_position()
-		#if Input.is_action_just_pressed('right_click'):
-			#lp2 = get_global_mouse_position()
-			#is_mouse_busy = false
-	#elif lp1 > Vector2.ZERO and lp2 > Vector2.ZERO :
-		#var line2d = Line2D.new()
-		#line2d.add_point(lp1)
-		#line2d.add_point(lp2)
-		#canvas_connection_collection.add_child(line2d)
-		#lp1 = Vector2.ZERO
-		#lp2 = Vector2.ZERO
 	if Input.is_action_just_pressed('right_click'):
 		is_drawing = true
 		if not is_mouse_busy:
@@ -69,6 +60,13 @@ func create_connection():
 			is_drawing = false
 
 
+func create_connectiona():
+	if connection_array.size() >= 2 :
+		var connection_instance = CONNECTION.instantiate() as Connection
+		connection_instance.connection_2 = connection_array.pop_back()
+		connection_instance.connection_1 = connection_array.pop_back()
+		canvas_connection_collection.add_child(connection_instance)
+
 
 
 func _on_menu_layer_item_selected(item_name: String) -> void:
@@ -77,6 +75,7 @@ func _on_menu_layer_item_selected(item_name: String) -> void:
 		var item_instance = CANVAS_ITEM.instantiate() as Canvas_Item
 		item_instance.itself = item_instance
 		item_instance.connect('item_selected', _on_canvas_item_item_selected)
+		item_instance.connect('request_for_connection',_on_canvas_item_request_for_connection)
 		item_instance.myname = item_name
 		item_instance.opacity = 0.5
 		item_instance.position = get_global_mouse_position()
@@ -91,3 +90,9 @@ func _on_canvas_item_item_selected(_item_name: String, itself: Canvas_Item) -> v
 	print(itself)
 	selected_item.opacity = 0.5
 	is_mouse_busy = true
+
+func _on_canvas_item_request_for_connection(itself: Canvas_Item):
+	if connection_array.is_empty() :
+		connection_array.append(itself)
+	elif connection_array.find(itself) == -1 :
+		connection_array.append(itself)

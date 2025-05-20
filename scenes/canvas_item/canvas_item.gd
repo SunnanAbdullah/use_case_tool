@@ -2,6 +2,8 @@ class_name Canvas_Item extends Area2D
 
 
 signal item_selected(item_name:String, itself:Canvas_Item)
+signal request_for_connection(itself:Canvas_Item)
+
 
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
@@ -18,7 +20,9 @@ func _input(event: InputEvent) -> void:
 		if event.is_action_pressed('left_click') :
 			print("llllllllllllllllllllllllllllllllllllllllll")
 			emit_signal('item_selected',myname,itself)
-
+		elif event.is_action_pressed('right_click') :
+			print("llllllllllllllllllllllllllllllllllllllllll")
+			emit_signal('request_for_connection',itself)
 
 func _ready() -> void:
 ## This below equation draws the collision shape for changing size of image
