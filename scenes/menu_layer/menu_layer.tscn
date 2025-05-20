@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://b5ek78f2gfl13"]
+
+[ext_resource type="Script" uid="uid://ut8d61tmoqyb" path="res://scenes/menu_layer/menu_layer.gd" id="1_w6fl2"]
+[ext_resource type="PackedScene" uid="uid://c6iti8e2dp8r2" path="res://scenes/menu_item/menu_item.tscn" id="2_rvj7o"]
+
+[node name="menu_layer" type="Node2D"]
+script = ExtResource("1_w6fl2")
+
+[node name="menu_item" parent="." instance=ExtResource("2_rvj7o")]
+position = Vector2(70, 68)
+myname = "red"
+
+[node name="menu_item2" parent="." instance=ExtResource("2_rvj7o")]
+position = Vector2(69, 206)
+
+[connection signal="item_selected" from="menu_item" to="." method="_on_menu_item_selected"]
+[connection signal="item_selected" from="menu_item2" to="." method="_on_menu_item_selected"]

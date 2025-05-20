@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://8ennlq4ekh7x"]
+
+[ext_resource type="Script" uid="uid://bwt2lw7kuyxom" path="res://scenes/canvas_item/canvas_item.gd" id="1_gt564"]
+[ext_resource type="Texture2D" uid="uid://bqbcwjg4m6sun" path="res://icon.svg" id="1_q6swd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q6swd"]
+
+[node name="canvas_item" type="Area2D"]
+script = ExtResource("1_gt564")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_q6swd")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_q6swd")
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

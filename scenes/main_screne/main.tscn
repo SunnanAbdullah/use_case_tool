@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://6mc0gjeath2i"]
+
+[ext_resource type="Script" uid="uid://d238oxbo01gj1" path="res://scenes/main_screne/main.gd" id="1_1sjem"]
+[ext_resource type="PackedScene" uid="uid://lrdchusu2b2k" path="res://scenes/camera/camera_2d.tscn" id="1_3lxbj"]
+[ext_resource type="Texture2D" uid="uid://bqbcwjg4m6sun" path="res://icon.svg" id="2_jv0e6"]
+[ext_resource type="PackedScene" uid="uid://b5ek78f2gfl13" path="res://scenes/menu_layer/menu_layer.tscn" id="3_6egll"]
+
+[node name="main" type="Node2D"]
+script = ExtResource("1_1sjem")
+
+[node name="Camera2D" parent="." instance=ExtResource("1_3lxbj")]
+
+[node name="Icon" type="Sprite2D" parent="."]
+position = Vector2(597, 267)
+scale = Vector2(10.1328, 9.34375)
+texture = ExtResource("2_jv0e6")
+metadata/_edit_lock_ = true
+
+[node name="canvas_connection_collection" type="Node2D" parent="."]
+
+[node name="canvas_item_collection" type="Node2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="menu_layer" parent="CanvasLayer" instance=ExtResource("3_6egll")]
+metadata/_edit_lock_ = true
+
+[connection signal="item_selected" from="CanvasLayer/menu_layer" to="." method="_on_menu_layer_item_selected"]
