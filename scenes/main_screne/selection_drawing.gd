@@ -3,7 +3,7 @@ extends Node2D
 
 var dragging : bool = false
 var dragging_start : Vector2 = Vector2.ZERO
-@export var is_mouse_busy : bool = false
+@export var is_mouse_busy : bool = true
 
 
 func _unhandled_input(event: InputEvent) -> void:

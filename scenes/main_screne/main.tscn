@@ -28,6 +28,5 @@ metadata/_edit_lock_ = true
 
 [node name="selection_drawing" type="Node2D" parent="."]
 script = ExtResource("5_q8s21")
-is_mouse_busy = true
 
 [connection signal="item_selected" from="CanvasLayer/menu_layer" to="." method="_on_menu_layer_item_selected"]

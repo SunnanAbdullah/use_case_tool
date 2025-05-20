@@ -28,19 +28,17 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	selection_drawing.is_mouse_busy = is_mouse_busy
 	dropitem()
-	selection_drawing.is_mouse_busy = is_mouse_busy
 	create_connectiona()
 	#create_connection()
 
 func dropitem():
-	selection_drawing.is_mouse_busy = is_mouse_busy
 	if is_mouse_busy and not is_drawing :
 		selected_item.global_position = get_global_mouse_position()
 		if Input.is_action_just_released('left_click') :
 			selected_item.opacity = 1.0
 			is_mouse_busy = false
+			selection_drawing.is_mouse_busy = is_mouse_busy
 			selected_item = null
 
 
@@ -49,9 +47,11 @@ func create_connection():
 		is_drawing = true
 		if not is_mouse_busy:
 			is_mouse_busy = true
+			selection_drawing.is_mouse_busy = is_mouse_busy
 			lp1 = get_global_mouse_position()
 		else:
 			is_mouse_busy = false
+			selection_drawing.is_mouse_busy = is_mouse_busy
 			lp2 = get_global_mouse_position()
 			if canvas_connection_collection != null: # Safely check if the target node exists
 				var line2d = Line2D.new()
@@ -88,7 +88,7 @@ func _on_menu_layer_item_selected(item_name: String) -> void:
 		canvas_item_collection.add_child(item_instance)
 		selected_item = item_instance
 		is_mouse_busy = true
-
+		selection_drawing.is_mouse_busy = is_mouse_busy
 
  
 func _on_canvas_item_item_selected(_item_name: String, itself: Canvas_Item) -> void:
@@ -96,6 +96,9 @@ func _on_canvas_item_item_selected(_item_name: String, itself: Canvas_Item) -> v
 	print(itself)
 	selected_item.opacity = 0.5
 	is_mouse_busy = true
+	selection_drawing.is_mouse_busy = is_mouse_busy
+
+
 
 func _on_canvas_item_request_for_connection(itself: Canvas_Item):
 	if connection_array.is_empty() :
