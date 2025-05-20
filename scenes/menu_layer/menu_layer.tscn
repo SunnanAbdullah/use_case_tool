@@ -12,6 +12,7 @@ myname = "red"
 
 [node name="menu_item2" parent="." instance=ExtResource("2_rvj7o")]
 position = Vector2(69, 206)
+myname = "stickman"
 
 [connection signal="item_selected" from="menu_item" to="." method="_on_menu_item_selected"]
 [connection signal="item_selected" from="menu_item2" to="." method="_on_menu_item_selected"]

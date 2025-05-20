@@ -8,9 +8,18 @@ signal request_for_connection(itself:Canvas_Item)
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 
+
+const STICKMAN = preload('res://graphics/stickman.png')
+
+
 @export var opacity : float = 1.0
 @export var color : Color = Color.WHITE
-@export_enum("white","red","green") var myname : String =  "white"
+@export_enum(
+	"white",
+	"red",
+	"green",
+	"stickman"
+) var myname : String =  "white"
 
 var is_mouse_entered : bool = false
 var itself : Canvas_Item = null
@@ -44,7 +53,8 @@ func item_type():
 		sprite_2d.modulate = Color.RED
 	elif myname == "green":
 		sprite_2d.modulate = Color.GREEN
-
+	elif myname == "stickman":
+		sprite_2d.texture = STICKMAN
 
 func _on_mouse_entered() -> void:
 	print("mouse enter in "+ myname)
