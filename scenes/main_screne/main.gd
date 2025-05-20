@@ -8,6 +8,8 @@ const CONNECTION = preload('res://scenes/connections/connection.tscn')
 
 @onready var canvas_item_collection: Node2D = $canvas_item_collection
 @onready var canvas_connection_collection: Node2D = $canvas_connection_collection
+@onready var selection_drawing: Node2D = $selection_drawing
+@onready var main: Node2D = $'.'
 
 
 var is_mouse_busy : bool = false
@@ -26,11 +28,14 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	selection_drawing.is_mouse_busy = is_mouse_busy
 	dropitem()
+	selection_drawing.is_mouse_busy = is_mouse_busy
 	create_connectiona()
 	#create_connection()
 
 func dropitem():
+	selection_drawing.is_mouse_busy = is_mouse_busy
 	if is_mouse_busy and not is_drawing :
 		selected_item.global_position = get_global_mouse_position()
 		if Input.is_action_just_released('left_click') :
@@ -63,6 +68,7 @@ func create_connection():
 func create_connectiona():
 	if connection_array.size() >= 2 :
 		var connection_instance = CONNECTION.instantiate() as Connection
+		connection_instance.main_node = main
 		connection_instance.connection_2 = connection_array.pop_back()
 		connection_instance.connection_1 = connection_array.pop_back()
 		canvas_connection_collection.add_child(connection_instance)
@@ -96,3 +102,50 @@ func _on_canvas_item_request_for_connection(itself: Canvas_Item):
 		connection_array.append(itself)
 	elif connection_array.find(itself) == -1 :
 		connection_array.append(itself)
+
+
+
+
+
+
+
+
+
+
+
+var dragging : bool = false
+var dragging_start : Vector2 = Vector2.ZERO
+var rectangle_area : RectangleShape2D = RectangleShape2D.new()
+var selected = []
+
+
+signal send_reqtangle_coord(starting_coord:Vector2,ending_coord:Vector2)
+var start_coord : Vector2 = Vector2.ZERO
+var end_coord : Vector2 = Vector2.ZERO
+
+
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not is_mouse_busy:
+		if event.pressed:
+			dragging = true
+			dragging_start = get_global_mouse_position()
+		elif dragging :
+			dragging = false
+			queue_redraw()
+	if event is InputEventMouseMotion and dragging :
+		queue_redraw()
+	#label.text = "stating : " + str(dragging_start) + " Ending : "+ str(get_global_mouse_position() - dragging_start) + " Ending Refine : "+ str(get_global_mouse_position())
+
+
+
+
+func _draw() -> void:
+	if dragging and not is_mouse_busy:
+		start_coord = dragging_start
+		end_coord = dragging_start + (get_global_mouse_position() - dragging_start)
+		draw_rect(Rect2(dragging_start,get_global_mouse_position() - dragging_start),Color(Color.CRIMSON,1),5.0)
+		emit_signal('send_reqtangle_coord',start_coord,end_coord)
+	elif not dragging:
+		pass

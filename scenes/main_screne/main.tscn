@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://6mc0gjeath2i"]
+[gd_scene load_steps=6 format=3 uid="uid://6mc0gjeath2i"]
 
 [ext_resource type="Script" uid="uid://d238oxbo01gj1" path="res://scenes/main_screne/main.gd" id="1_1sjem"]
 [ext_resource type="PackedScene" uid="uid://lrdchusu2b2k" path="res://scenes/camera/camera_2d.tscn" id="1_3lxbj"]
 [ext_resource type="Texture2D" uid="uid://bqbcwjg4m6sun" path="res://icon.svg" id="2_jv0e6"]
 [ext_resource type="PackedScene" uid="uid://b5ek78f2gfl13" path="res://scenes/menu_layer/menu_layer.tscn" id="3_6egll"]
+[ext_resource type="Script" uid="uid://w6p7u0l0qh4i" path="res://scenes/main_screne/selection_drawing.gd" id="5_q8s21"]
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_1sjem")
@@ -24,5 +25,9 @@ metadata/_edit_lock_ = true
 
 [node name="menu_layer" parent="CanvasLayer" instance=ExtResource("3_6egll")]
 metadata/_edit_lock_ = true
+
+[node name="selection_drawing" type="Node2D" parent="."]
+script = ExtResource("5_q8s21")
+is_mouse_busy = true
 
 [connection signal="item_selected" from="CanvasLayer/menu_layer" to="." method="_on_menu_layer_item_selected"]

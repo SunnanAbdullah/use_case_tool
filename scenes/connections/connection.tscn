@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://do5xekmx8hki0" path="res://scenes/connections/connection.gd" id="1_bgeee"]
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_bgeee"]
+custom_solver_bias = 1.0
 b = Vector2(0, 0)
 
 [node name="connection" type="Line2D"]
