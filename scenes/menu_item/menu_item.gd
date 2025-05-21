@@ -9,7 +9,7 @@ signal item_selected(item_name:String)
 
 
 const STICKMAN = preload('res://graphics/stickman.png')
-
+const USE_CASE = preload('res://graphics/use_case.png')
 
 @export var opacity : float = 1.0
 @export var color : Color = Color.WHITE
@@ -17,7 +17,8 @@ const STICKMAN = preload('res://graphics/stickman.png')
 	"white",
 	"red",
 	"green",
-	"stickman"
+	"stickman",
+	"use_case"
 ) var myname : String =  "white"
 
 
@@ -54,6 +55,9 @@ func item_type():
 		sprite_2d.modulate = Color.GREEN
 	elif myname == "stickman":
 		sprite_2d.texture = STICKMAN
+	elif  myname == "use_case" :
+		sprite_2d.texture = USE_CASE
+
 
 
 func _on_mouse_entered() -> void:

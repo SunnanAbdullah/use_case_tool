@@ -8,7 +8,7 @@ script = ExtResource("1_w6fl2")
 
 [node name="menu_item" parent="." instance=ExtResource("2_rvj7o")]
 position = Vector2(70, 68)
-myname = "red"
+myname = "use_case"
 
 [node name="menu_item2" parent="." instance=ExtResource("2_rvj7o")]
 position = Vector2(69, 206)

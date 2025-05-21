@@ -1,18 +1,37 @@
 [gd_scene load_steps=4 format=3 uid="uid://8ennlq4ekh7x"]
 
 [ext_resource type="Script" uid="uid://bwt2lw7kuyxom" path="res://scenes/canvas_item/canvas_item.gd" id="1_gt564"]
-[ext_resource type="Texture2D" uid="uid://bqbcwjg4m6sun" path="res://icon.svg" id="1_q6swd"]
+[ext_resource type="Texture2D" uid="uid://nak27b65ii7" path="res://graphics/use_case.png" id="2_gt564"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q6swd"]
 
 [node name="canvas_item" type="Area2D"]
 script = ExtResource("1_gt564")
+myname = "use_case"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_q6swd")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_q6swd")
+texture = ExtResource("2_gt564")
+
+[node name="Label" type="Label" parent="."]
+modulate = Color(0, 0, 0, 1)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -69.0
+offset_top = -24.5
+offset_right = 69.0
+offset_bottom = 24.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "User Registration 
+System"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

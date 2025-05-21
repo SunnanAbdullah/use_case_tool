@@ -7,19 +7,25 @@ signal request_for_connection(itself:Canvas_Item)
 
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
+@onready var label: Label = $Label
 
 
 const STICKMAN = preload('res://graphics/stickman.png')
+const USE_CASE = preload('res://graphics/use_case.png')
 
 
+@export var padding: Vector2 = Vector2(20, 40) # extra space around the text
 @export var opacity : float = 1.0
 @export var color : Color = Color.WHITE
 @export_enum(
 	"white",
 	"red",
 	"green",
-	"stickman"
+	"stickman",
+	"use_case"
 ) var myname : String =  "white"
+
+
 
 var is_mouse_entered : bool = false
 var itself : Canvas_Item = null
@@ -34,11 +40,16 @@ func _input(event: InputEvent) -> void:
 			emit_signal('request_for_connection',itself)
 
 func _ready() -> void:
+	if myname == "use_case":
+		queue_redraw()  # correct in Godot 4
 ## This below equation draws the collision shape for changing size of image
 	collision_shape_2d.shape.size = Vector2((sprite_2d.texture.get_width() * sprite_2d.scale.x),(sprite_2d.texture.get_height() * sprite_2d.scale.y))
 	#sprite_2d.modulate = color
 	#myname = name
 	item_type()
+	#update_oval_size()
+
+
 
 func _process(_delta: float) -> void:
 	#collision_shape_2d.shape.size = Vector2((sprite_2d.texture.get_width() * sprite_2d.scale.x),(sprite_2d.texture.get_height() * sprite_2d.scale.y))
@@ -54,7 +65,12 @@ func item_type():
 	elif myname == "green":
 		sprite_2d.modulate = Color.GREEN
 	elif myname == "stickman":
+		label.position.y = sprite_2d.texture.get_height()/2 +16
 		sprite_2d.texture = STICKMAN
+	elif  myname == "use_case" :
+		sprite_2d.visible = false
+
+
 
 func _on_mouse_entered() -> void:
 	print("mouse enter in "+ myname)
@@ -62,3 +78,70 @@ func _on_mouse_entered() -> void:
 
 func _on_mouse_exited() -> void:
 	is_mouse_entered = false
+
+
+
+
+
+
+
+@export_group("Label Setting")
+#@export var padding: Vector2 = Vector2(10, 5)
+@export var ellipse_color: Color = Color.BLACK
+@export var ellipse_thickness: float = 10.0
+@export var segments: int = 64  # More segments = smoother ellipse
+
+
+
+func update_oval_size():
+	var font := label.get_theme_font("font")
+	if font == null or sprite_2d.texture == null:
+		return
+
+	# Get size of the text
+	var text_size = font.get_string_size(label.text)
+
+	# Add padding
+	var target_size = text_size + padding * 2
+
+	# Get texture size of the oval image
+	var texture_size = sprite_2d.texture.get_size()
+
+	if texture_size == Vector2.ZERO:
+		return
+
+	# Scale the sprite to fit the target size
+	sprite_2d.scale = target_size / texture_size
+
+	# Align sprite center with label center
+	var label_center = label.global_position + (label.size / 2)
+	sprite_2d.global_position = label_center
+	sprite_2d.position -= (texture_size * sprite_2d.scale) / 2
+
+
+
+func _draw():
+	if label == null:
+		return
+
+	var font := label.get_theme_font("font")
+	if font == null:
+		return
+
+	var text := label.text
+	var text_size := font.get_string_size(text)
+	var ellipse_size := text_size + padding * 2
+	var center := label.global_position + (label.size / 2)
+
+	# Convert to local coordinates of this node
+	var local_center := to_local(center)
+
+	# Simulate an ellipse using points
+	var points := []
+	for i in range(segments + 1):
+		var angle := (TAU * i) / segments
+		var x := (ellipse_size.x / 2) * cos(angle)
+		var y := (ellipse_size.y / 2) * sin(angle)
+		points.append(local_center + Vector2(x, y))
+	if myname == "use_case":
+		draw_polyline(points, ellipse_color, ellipse_thickness)
