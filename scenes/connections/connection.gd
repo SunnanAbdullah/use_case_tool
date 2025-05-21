@@ -18,40 +18,40 @@ func _input(event: InputEvent) -> void:
 func _ready() -> void:
 	if main_node :
 		main_node.connect("send_reqtangle_coord",_on_send_rectangle_cord)
-	if connection_1 and connection_2 :
-		points[0] = connection_1.global_position
-		points[1] = connection_2.global_position
-		collision_shape_2d.shape.a = points[0]
-		collision_shape_2d.shape.b = points[1]
-	#if connection_1 and connection_2:
-		#var center1 = connection_1.global_position
-		#var center2 = connection_2.global_position
-		#var dir = center2 - center1
-		#var size1 = connection_1.collision_shape_2d.shape.extents * 2
-		#var size2 = connection_2.collision_shape_2d.shape.extents * 2
-		#var point1 = get_boundary_point(center1, size1, dir)
-		#var point2 = get_boundary_point(center2, size2, -dir)
-		#points[0] = point1
-		#points[1] = point2
+	#if connection_1 and connection_2 :
+		#points[0] = connection_1.global_position
+		#points[1] = connection_2.global_position
+		#collision_shape_2d.shape.a = points[0]
+		#collision_shape_2d.shape.b = points[1]
+	if connection_1 and connection_2:
+		var center1 = connection_1.global_position
+		var center2 = connection_2.global_position
+		var dir = center2 - center1
+		var size1 = connection_1.collision_shape_2d.shape.get_rect().size
+		var size2 = connection_2.collision_shape_2d.shape.get_rect().size
+		var point1 = get_boundary_point(center1, size1, dir)
+		var point2 = get_boundary_point(center2, size2, -dir)
+		points[0] = point1
+		points[1] = point2
 
 
 
 func _process(_delta: float) -> void:
-	if connection_1 and connection_2 :
-		points[0] = connection_1.global_position
-		points[1] = connection_2.global_position
-		collision_shape_2d.shape.a = points[0]
-		collision_shape_2d.shape.b = points[1]
-	#if connection_1 and connection_2:
-		#var center1 = connection_1.global_position
-		#var center2 = connection_2.global_position
-		#var dir = center2 - center1
-		#var size1 = connection_1.sprite_2d.texture.get_size() * connection_1.sprite_2d.scale
-		#var size2 = connection_2.sprite_2d.texture.get_size() * connection_2.sprite_2d.scale
-		#var point1 = get_boundary_point(center1, size1, dir)
-		#var point2 = get_boundary_point(center2, size2, -dir)
-		#points[0] = point1
-		#points[1] = point2
+	#if connection_1 and connection_2 :
+		#points[0] = connection_1.global_position
+		#points[1] = connection_2.global_position
+		#collision_shape_2d.shape.a = points[0]
+		#collision_shape_2d.shape.b = points[1]
+	if connection_1 and connection_2:
+		var center1 = connection_1.global_position
+		var center2 = connection_2.global_position
+		var dir = center2 - center1
+		var size1 = connection_1.collision_shape_2d.shape.get_rect().size
+		var size2 = connection_2.collision_shape_2d.shape.get_rect().size
+		var point1 = get_boundary_point(center1, size1, dir)
+		var point2 = get_boundary_point(center2, size2, -dir)
+		points[0] = point1
+		points[1] = point2
 
 	if is_selected :
 		self.default_color = Color.RED
