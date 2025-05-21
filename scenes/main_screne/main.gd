@@ -80,6 +80,7 @@ func _on_menu_layer_item_selected(item_name: String) -> void:
 		#var item_instance = MENU_ITEM.instantiate() as MenuItem
 		var item_instance = CANVAS_ITEM.instantiate() as Canvas_Item
 		item_instance.itself = item_instance
+		item_instance.main_node = main
 		item_instance.connect('item_selected', _on_canvas_item_item_selected)
 		item_instance.connect('request_for_connection',_on_canvas_item_request_for_connection)
 		item_instance.myname = item_name

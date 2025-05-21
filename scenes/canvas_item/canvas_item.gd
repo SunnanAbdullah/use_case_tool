@@ -13,7 +13,7 @@ signal request_for_connection(itself:Canvas_Item)
 const STICKMAN = preload('res://graphics/stickman.png')
 const USE_CASE = preload('res://graphics/use_case.png')
 
-
+@export var main_node : Node2D
 @export var padding: Vector2 = Vector2(20, 40) # extra space around the text
 @export var opacity : float = 1.0
 @export var color : Color = Color.WHITE
@@ -29,9 +29,13 @@ const USE_CASE = preload('res://graphics/use_case.png')
 
 var is_mouse_entered : bool = false
 var itself : Canvas_Item = null
-
+var is_selected : bool = false
 
 func _input(event: InputEvent) -> void:
+	if event is InputEvent and event.is_action_pressed('delete') and is_selected :
+		self.queue_free()
+	if event is InputEventMouseButton and is_selected and event.button_index == MOUSE_BUTTON_RIGHT :
+		is_selected = false
 	if event is InputEventMouseButton  and is_mouse_entered:
 		if event.is_action_pressed('left_click') :
 			print("llllllllllllllllllllllllllllllllllllllllll")
@@ -50,6 +54,10 @@ func _ready() -> void:
 	else :
 		collision_shape_2d.shape.size = Vector2((sprite_2d.texture.get_width() * sprite_2d.scale.x),(sprite_2d.texture.get_height() * sprite_2d.scale.y))
 
+	if main_node :
+		main_node.connect("send_reqtangle_coord",_on_send_rectangle_cord)
+
+
 	#queue_redraw()
 	#collision_shape_2d.shape.size = Vector2((sprite_2d.texture.get_width() * sprite_2d.scale.x),(sprite_2d.texture.get_height() * sprite_2d.scale.y))
 	item_type()
@@ -60,7 +68,10 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	#collision_shape_2d.shape.size = Vector2((sprite_2d.texture.get_width() * sprite_2d.scale.x),(sprite_2d.texture.get_height() * sprite_2d.scale.y))
 	sprite_2d.modulate.a = opacity
-
+	if is_selected :
+		label.modulate = Color.RED
+	else :
+		label.modulate = Color.BLACK
 
 
 func item_type():
@@ -96,6 +107,37 @@ func _on_mouse_exited() -> void:
 @export var ellipse_color: Color = Color.BLACK
 @export var ellipse_thickness: float = 10.0
 @export var segments: int = 64  # More segments = smoother ellipse
+
+
+func _on_send_rectangle_cord(starting_coord: Vector2, ending_coord: Vector2):
+	var min_x = min(starting_coord.x, ending_coord.x)
+	var max_x = max(starting_coord.x, ending_coord.x)
+	var min_y = min(starting_coord.y, ending_coord.y)
+	var max_y = max(starting_coord.y, ending_coord.y)
+
+# Get the collision shape position (center) and size
+	var center = collision_shape_2d.global_position
+	var rect_shape = collision_shape_2d.shape as RectangleShape2D
+	var half_size = rect_shape.size / 2.0
+
+	# Calculate the bounds of the box
+	var box_min_x = center.x - half_size.x
+	var box_max_x = center.x + half_size.x
+	var box_min_y = center.y - half_size.y
+	var box_max_y = center.y + half_size.y
+
+# Full containment check
+	if ( box_min_x >= min_x and box_max_x <= max_x and box_min_y >= min_y and box_max_y <= max_y):
+		is_selected = true
+		#print("Collision box is fully inside the custom rectangle.")
+	# Partial intersection check
+	elif not ( box_max_x < min_x or box_min_x > max_x or box_max_y < min_y or box_min_y > max_y ):
+		is_selected = true
+		#print("Collision box is partially inside the custom rectangle.")
+	# No overlap
+	else:
+		is_selected = false
+		#print("Collision box is completely outside the custom rectangle.")
 
 
 
