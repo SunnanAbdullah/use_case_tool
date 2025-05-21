@@ -3,14 +3,14 @@
 [ext_resource type="Script" uid="uid://bwt2lw7kuyxom" path="res://scenes/canvas_item/canvas_item.gd" id="1_gt564"]
 [ext_resource type="Texture2D" uid="uid://nak27b65ii7" path="res://graphics/use_case.png" id="2_gt564"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_q6swd"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gt564"]
 
 [node name="canvas_item" type="Area2D"]
 script = ExtResource("1_gt564")
 myname = "use_case"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_q6swd")
+shape = SubResource("RectangleShape2D_gt564")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_gt564")

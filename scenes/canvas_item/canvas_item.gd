@@ -30,6 +30,7 @@ const USE_CASE = preload('res://graphics/use_case.png')
 var is_mouse_entered : bool = false
 var itself : Canvas_Item = null
 
+
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton  and is_mouse_entered:
 		if event.is_action_pressed('left_click') :
@@ -40,12 +41,17 @@ func _input(event: InputEvent) -> void:
 			emit_signal('request_for_connection',itself)
 
 func _ready() -> void:
+## This below equation draws the collision shape for changing size of image
+	if collision_shape_2d.shape != null :
+		collision_shape_2d.shape = collision_shape_2d.shape.duplicate()
 	if myname == "use_case":
 		queue_redraw()  # correct in Godot 4
-## This below equation draws the collision shape for changing size of image
-	collision_shape_2d.shape.size = Vector2((sprite_2d.texture.get_width() * sprite_2d.scale.x),(sprite_2d.texture.get_height() * sprite_2d.scale.y))
-	#sprite_2d.modulate = color
-	#myname = name
+		collision_shape_2d.shape.size = calculate_ellipse_size()
+	else :
+		collision_shape_2d.shape.size = Vector2((sprite_2d.texture.get_width() * sprite_2d.scale.x),(sprite_2d.texture.get_height() * sprite_2d.scale.y))
+
+	#queue_redraw()
+	#collision_shape_2d.shape.size = Vector2((sprite_2d.texture.get_width() * sprite_2d.scale.x),(sprite_2d.texture.get_height() * sprite_2d.scale.y))
 	item_type()
 	#update_oval_size()
 
@@ -68,7 +74,7 @@ func item_type():
 		label.position.y = sprite_2d.texture.get_height()/2 +16
 		sprite_2d.texture = STICKMAN
 	elif  myname == "use_case" :
-		sprite_2d.visible = false
+		sprite_2d.texture = null
 
 
 
@@ -119,29 +125,41 @@ func update_oval_size():
 	sprite_2d.position -= (texture_size * sprite_2d.scale) / 2
 
 
-
-func _draw():
+func calculate_ellipse_size() -> Vector2:
 	if label == null:
-		return
-
+		return Vector2.ZERO
 	var font := label.get_theme_font("font")
 	if font == null:
-		return
-
+		return Vector2.ZERO
 	var text := label.text
-	var text_size := font.get_string_size(text)
-	var ellipse_size := text_size + padding * 2
-	var center := label.global_position + (label.size / 2)
+	return font.get_string_size(text) + padding * 2
 
-	# Convert to local coordinates of this node
-	var local_center := to_local(center)
 
-	# Simulate an ellipse using points
-	var points := []
-	for i in range(segments + 1):
-		var angle := (TAU * i) / segments
-		var x := (ellipse_size.x / 2) * cos(angle)
-		var y := (ellipse_size.y / 2) * sin(angle)
-		points.append(local_center + Vector2(x, y))
+func _draw():
 	if myname == "use_case":
-		draw_polyline(points, ellipse_color, ellipse_thickness)
+		if label == null:
+			return
+
+		var font := label.get_theme_font("font")
+		if font == null:
+			return
+
+		var text := label.text
+		var text_size := font.get_string_size(text)
+		var ellipse_size := text_size + padding * 2
+		var center := label.global_position + (label.size / 2)
+
+		# Convert to local coordinates of this node
+		var local_center := to_local(center)
+
+		# Simulate an ellipse using points
+		var points := []
+		for i in range(segments + 1):
+			var angle := (TAU * i) / segments
+			var x := (ellipse_size.x / 2) * cos(angle)
+			var y := (ellipse_size.y / 2) * sin(angle)
+			points.append(local_center + Vector2(x, y))
+
+		# Now draw the ellipse as a polyline
+		if points.size() >= 2:
+			draw_polyline(points, ellipse_color, ellipse_thickness)
