@@ -3,11 +3,13 @@ class_name Canvas_Item extends Area2D
 
 signal item_selected(item_name:String, itself:Canvas_Item)
 signal request_for_connection(itself:Canvas_Item)
+signal request_for_properties_panel(itself: Canvas_Item)
 
 
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 @onready var label: Label = $Label
+@onready var properties_panel: PropertiesPanel = $Properties_panel
 
 
 const STICKMAN = preload('res://graphics/stickman.png')
@@ -38,13 +40,15 @@ func _input(event: InputEvent) -> void:
 		is_selected = false
 	if event is InputEventMouseButton  and is_mouse_entered:
 		if event.is_action_pressed('left_click') :
-			print("llllllllllllllllllllllllllllllllllllllllll")
+			#print("llllllllllllllllllllllllllllllllllllllllll")
+			is_selected = true
 			emit_signal('item_selected',myname,itself)
 		elif event.is_action_pressed('right_click') :
-			print("llllllllllllllllllllllllllllllllllllllllll")
+			#print("llllllllllllllllllllllllllllllllllllllllll")
 			emit_signal('request_for_connection',itself)
 
 func _ready() -> void:
+	label.text = myname
 ## This below equation draws the collision shape for changing size of image
 	if collision_shape_2d.shape != null :
 		collision_shape_2d.shape = collision_shape_2d.shape.duplicate()
@@ -62,15 +66,26 @@ func _ready() -> void:
 	#collision_shape_2d.shape.size = Vector2((sprite_2d.texture.get_width() * sprite_2d.scale.x),(sprite_2d.texture.get_height() * sprite_2d.scale.y))
 	item_type()
 	#update_oval_size()
+	_properties_panel_position()
 
+
+func _properties_panel_position():
+	if myname == "stickman":
+		properties_panel.position.y = label.position.y + 16
+	elif  myname == "use_case" :
+		properties_panel.position.y = collision_shape_2d.shape.size.y 
 
 
 func _process(_delta: float) -> void:
 	#collision_shape_2d.shape.size = Vector2((sprite_2d.texture.get_width() * sprite_2d.scale.x),(sprite_2d.texture.get_height() * sprite_2d.scale.y))
 	sprite_2d.modulate.a = opacity
 	if is_selected :
+		properties_panel.visible = true
+		#if itself :
+			#emit_signal("request_for_properties_panel",itself)
 		label.modulate = Color.RED
 	else :
+		properties_panel.visible = false
 		label.modulate = Color.BLACK
 
 
@@ -89,8 +104,9 @@ func item_type():
 
 
 
+
 func _on_mouse_entered() -> void:
-	print("mouse enter in "+ myname)
+	#print("mouse enter in "+ myname)
 	is_mouse_entered = true
 
 func _on_mouse_exited() -> void:
@@ -205,3 +221,11 @@ func _draw():
 		# Now draw the ellipse as a polyline
 		if points.size() >= 2:
 			draw_polyline(points, ellipse_color, ellipse_thickness)
+
+
+func _on_properties_panel_text_change(new_text: String) -> void:
+	label.text = new_text
+	if myname == "use_case":
+		queue_redraw()  
+		_properties_panel_position()
+		collision_shape_2d.shape.size = calculate_ellipse_size()

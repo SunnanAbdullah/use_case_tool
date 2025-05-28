@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://8ennlq4ekh7x"]
+[gd_scene load_steps=5 format=3 uid="uid://8ennlq4ekh7x"]
 
 [ext_resource type="Script" uid="uid://bwt2lw7kuyxom" path="res://scenes/canvas_item/canvas_item.gd" id="1_gt564"]
 [ext_resource type="Texture2D" uid="uid://nak27b65ii7" path="res://graphics/use_case.png" id="2_gt564"]
+[ext_resource type="PackedScene" uid="uid://cqeyokrsia8hj" path="res://scenes/properties_panel/properties_panel.tscn" id="3_p5drp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gt564"]
 
@@ -33,5 +34,9 @@ System"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Properties_panel" parent="." instance=ExtResource("3_p5drp")]
+position = Vector2(0, 59)
+
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="text_change" from="Properties_panel" to="." method="_on_properties_panel_text_change"]

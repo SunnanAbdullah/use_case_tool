@@ -28,7 +28,7 @@ var is_mouse_entered : bool = false
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton  and is_mouse_entered:
 		if event.is_action_pressed('left_click') :
-			print("llllllllllllllllllllllllllllllllllllllllll")
+			#print("llllllllllllllllllllllllllllllllllllllllll")
 			emit_signal('item_selected',myname)
 
 
@@ -61,7 +61,7 @@ func item_type():
 
 
 func _on_mouse_entered() -> void:
-	print("mouse enter in "+ myname)
+	#print("mouse enter in "+ myname)
 	is_mouse_entered = true
 
 func _on_mouse_exited() -> void:

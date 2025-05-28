@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=3 uid="uid://cqeyokrsia8hj"]
+
+[ext_resource type="Script" uid="uid://d3obp101jtno2" path="res://scenes/properties_panel/properties_panel.gd" id="1_p3a5h"]
+
+[node name="Properties_panel" type="Node2D"]
+script = ExtResource("1_p3a5h")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+layout_mode = 1
+offset_right = 119.0
+offset_bottom = 58.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Name : "
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Control/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Text : "
+
+[node name="LineEdit" type="LineEdit" parent="Control/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+expand_to_text_length = true
+
+[connection signal="text_changed" from="Control/VBoxContainer/HBoxContainer2/LineEdit" to="." method="_on_line_edit_text_changed"]

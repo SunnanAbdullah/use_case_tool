@@ -10,12 +10,14 @@ const CONNECTION = preload('res://scenes/connections/connection.tscn')
 @onready var canvas_connection_collection: Node2D = $canvas_connection_collection
 @onready var selection_drawing: Node2D = $selection_drawing
 @onready var main: Node2D = $'.'
+@onready var properties_panel: PropertiesPanel = $CanvasLayer/Properties_panel
 
 
 var is_mouse_busy : bool = false
 var is_drawing : bool = false
 var selected_item : Canvas_Item
-
+var property_selected_item : Canvas_Item
+var previous_property_selected_item : Canvas_Item
 
 var connection_array : Array[Canvas_Item] = []
 
@@ -31,6 +33,22 @@ func _process(_delta: float) -> void:
 	dropitem()
 	create_connectiona()
 	#create_connection()
+	#if selected_item :
+		#print(str(selected_item)+ " : "+ str(selected_item.is_selected))
+	#if selected_item and selected_item.is_selected :
+		#previous_selected_item = selected_item
+		#properties_panel.line_edit.text = selected_item.label.text 
+	#elif selected_item and  (selected_item.is_selected != true or selected_item != previous_selected_item ) :
+		#properties_panel.line_edit.text = ""
+	if property_selected_item :
+		previous_property_selected_item = property_selected_item
+		if selected_item and selected_item.is_selected:
+			properties_panel.line_edit.text = property_selected_item.label.text
+		elif selected_item and selected_item.is_selected == false:
+			properties_panel.line_edit.text = ""
+		print (str(property_selected_item)+ " : "+ str(property_selected_item.is_selected) )
+		print ("prev : " + str(previous_property_selected_item)+ " : "+ str(previous_property_selected_item.is_selected) )
+
 
 func dropitem():
 	if is_mouse_busy and not is_drawing :
@@ -83,6 +101,7 @@ func _on_menu_layer_item_selected(item_name: String) -> void:
 		item_instance.main_node = main
 		item_instance.connect('item_selected', _on_canvas_item_item_selected)
 		item_instance.connect('request_for_connection',_on_canvas_item_request_for_connection)
+		#item_instance.connect('request_for_properties_panel',_on_canvas_item_request_for_properties_panel)
 		item_instance.myname = item_name
 		item_instance.opacity = 0.5
 		item_instance.position = get_global_mouse_position()
@@ -94,11 +113,14 @@ func _on_menu_layer_item_selected(item_name: String) -> void:
  
 func _on_canvas_item_item_selected(_item_name: String, itself: Canvas_Item) -> void:
 	selected_item = itself
-	print(itself)
+	#print(itself)
 	selected_item.opacity = 0.5
 	is_mouse_busy = true
 	selection_drawing.is_mouse_busy = is_mouse_busy
 
+
+#func _on_canvas_item_request_for_properties_panel(itself: Canvas_Item):
+	#property_selected_item = itself
 
 
 func _on_canvas_item_request_for_connection(itself: Canvas_Item):
@@ -153,3 +175,11 @@ func _draw() -> void:
 		emit_signal('send_reqtangle_coord',start_coord,end_coord)
 	elif not dragging:
 		pass
+
+
+#func _on_properties_panel_text_change(new_text: String) -> void:
+	##pass
+	#if property_selected_item.is_selected :
+		#property_selected_item.label.text = new_text
+	#else :
+		#property_selected_item.label.text = ""
