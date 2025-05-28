@@ -28,6 +28,7 @@ metadata/_edit_lock_ = true
 metadata/_edit_lock_ = true
 
 [node name="Properties_panel" parent="CanvasLayer" instance=ExtResource("5_1p6bs")]
+visible = false
 position = Vector2(13, 296)
 
 [node name="selection_drawing" type="Node2D" parent="."]

@@ -10,7 +10,7 @@ class_name Connection extends Line2D
 
 
 const DOTTED_LINE_TEST_32_PX = preload('res://graphics/dotted_line_test_32px.png')
-
+const DOTTED_LINE_TEST_32_PX_WHITE = preload('res://graphics/dotted_line_test_32px_white.png')
 
 func _input(event: InputEvent) -> void:
 	if event is InputEvent and event.is_action_pressed('delete') and is_selected :
@@ -137,5 +137,5 @@ func _on_option_button_item_selected(index: int) -> void:
 		texture = null
 		width = 10
 	elif index == 1 :
-		texture = DOTTED_LINE_TEST_32_PX
+		texture = DOTTED_LINE_TEST_32_PX_WHITE
 		width = 32
