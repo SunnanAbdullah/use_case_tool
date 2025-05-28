@@ -3,7 +3,7 @@ class_name Canvas_Item extends Area2D
 
 signal item_selected(item_name:String, itself:Canvas_Item)
 signal request_for_connection(itself:Canvas_Item)
-signal request_for_properties_panel(itself: Canvas_Item)
+#signal request_for_properties_panel(itself: Canvas_Item)
 
 
 @onready var sprite_2d: Sprite2D = $Sprite2D
@@ -97,7 +97,8 @@ func item_type():
 	elif myname == "green":
 		sprite_2d.modulate = Color.GREEN
 	elif myname == "stickman":
-		label.position.y = sprite_2d.texture.get_height()/2 +16
+		@warning_ignore("integer_division")
+		label.position.y = sprite_2d.texture.get_height()/2 + 16
 		sprite_2d.texture = STICKMAN
 	elif  myname == "use_case" :
 		sprite_2d.texture = null

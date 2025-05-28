@@ -22,4 +22,14 @@ shape = SubResource("SegmentShape2D_bgeee")
 one_way_collision_margin = 0.0
 debug_color = Color(0.975706, 0.156124, 0, 0.42)
 
+[node name="OptionButton" type="OptionButton" parent="."]
+offset_right = 88.0
+offset_bottom = 31.0
+item_count = 2
+popup/item_0/text = "normal"
+popup/item_0/id = 0
+popup/item_1/text = "dotted"
+popup/item_1/id = 1
+
 [connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]
+[connection signal="item_selected" from="OptionButton" to="." method="_on_option_button_item_selected"]

@@ -5,8 +5,12 @@ class_name Connection extends Line2D
 @export var main_node : Node2D
 @export var is_selected : bool = true
 
-
 @onready var collision_shape_2d: CollisionShape2D = $Area2D/CollisionShape2D
+@onready var option_button: OptionButton = $OptionButton
+
+
+const DOTTED_LINE_TEST_32_PX = preload('res://graphics/dotted_line_test_32px.png')
+
 
 func _input(event: InputEvent) -> void:
 	if event is InputEvent and event.is_action_pressed('delete') and is_selected :
@@ -52,11 +56,15 @@ func _process(_delta: float) -> void:
 		var point2 = get_boundary_point(center2, size2, -dir)
 		points[0] = point1
 		points[1] = point2
+		option_button.position = (point1 + point2)/2
 
 	if is_selected :
+		option_button.visible = true
 		self.default_color = Color.RED
 	else :
+		option_button.visible = false
 		self.default_color = Color.WHITE
+
 
 func _on_area_2d_mouse_entered() -> void:
 	print("enterrrrrrrrrrrrrrrrrrrrrrrrr")
@@ -122,3 +130,12 @@ func _on_send_rectangle_cord(starting_coord: Vector2, ending_coord: Vector2):
 		if Geometry2D.segment_intersects_segment(A, B, edge[0], edge[1]) != null:
 			is_selected = true
 			return
+
+
+func _on_option_button_item_selected(index: int) -> void:
+	if index == 0 :
+		texture = null
+		width = 10
+	elif index == 1 :
+		texture = DOTTED_LINE_TEST_32_PX
+		width = 32
