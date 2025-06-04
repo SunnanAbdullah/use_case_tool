@@ -25,11 +25,23 @@ var lp1 : Vector2 = Vector2.ZERO
 var lp2 : Vector2 = Vector2.ZERO
 
 
+var bounding_box_properties : Rect2 
+const BOUNDING_BOX_PADDING : Vector2 = Vector2(100,100)
+
 func _ready() -> void:
-	pass # Replace with function body.
+	#capture_subviewport_image()
+	#pass # Replace with function body.
+	if canvas_item_collection.get_children():
+		bounding_box_properties = get_bounding_box(canvas_item_collection.get_children() as Array[Canvas_Item])
 
 
 func _process(_delta: float) -> void:
+	if canvas_item_collection.get_children():
+		bounding_box_properties = get_bounding_box(canvas_item_collection.get_children() )
+	queue_redraw()
+	if Input.is_action_just_pressed('save'):
+		s()
+		capture_subviewport_region(Vector2(50, 30), Vector2(2000, 1500))
 	dropitem()
 	create_connectiona()
 	#create_connection()
@@ -168,6 +180,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _draw() -> void:
+	draw_rect(
+		bounding_box_properties,
+		Color(Color.AQUA ,1),5.0
+	)
 	if dragging and not is_mouse_busy:
 		start_coord = dragging_start
 		end_coord = dragging_start + (get_global_mouse_position() - dragging_start)
@@ -175,6 +191,116 @@ func _draw() -> void:
 		emit_signal('send_reqtangle_coord',start_coord,end_coord)
 	elif not dragging:
 		pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Each object is a dictionary with `center`, `vertical`, `horizontal`
+#var objects = [
+	#{ "center": Vector2(100, 100), "vertical": 20, "horizontal": 30 },
+	#{ "center": Vector2(200, 150), "vertical": 50, "horizontal": 40 },
+	#{ "center": Vector2(150, 80),  "vertical": 25, "horizontal": 35 },
+#]
+
+
+func get_bounding_box(objects: Array) -> Rect2:
+	if objects.size() == 0:
+		return Rect2()
+
+	var first = objects[0]
+	var center = first.position
+	var h = int(first.collision_shape_2d.shape.size.x / 2)
+	var v = int(first.collision_shape_2d.shape.size.y / 2)
+
+	var min_x = center.x - h
+	var max_x = center.x + h
+	var min_y = center.y - v
+	var max_y = center.y + v
+
+	for obj in objects:
+		var c = obj.position
+		var hor = int(first.collision_shape_2d.shape.size.x / 2)
+		var ver = int(first.collision_shape_2d.shape.size.y / 2)
+
+		min_x = min(min_x, c.x - hor)
+		max_x = max(max_x, c.x + hor)
+		min_y = min(min_y, c.y - ver)
+		max_y = max(max_y, c.y + ver)
+
+	var top_left = Vector2(min_x, min_y) - BOUNDING_BOX_PADDING
+	var size = Vector2(max_x - min_x, max_y - min_y) + BOUNDING_BOX_PADDING * 2
+
+	return Rect2(top_left, size)
+	#return [top_left, size]
+
+
+
+
+
+func capture_subviewport_image():
+	var subviewport := $SubViewport  # Reference your SubViewport node
+	var image = subviewport.get_texture().get_image()
+	image.save_png("user://snapshot.png")
+	print("Saved SubViewport snapshot!")
+
+
+func s():
+	get_tree().root.get_texture().get_image().save_png("res://snapshot23.png")
+	# Create the SubViewport 
+	var sub_viewport = SubViewport.new()
+	# Add the SubViewport to the tree
+	add_child(sub_viewport)
+	# Use the same World2D as the main Viewport
+	sub_viewport.world_2d = get_viewport().world_2d
+	# Set its size
+	sub_viewport.size = Vector2(6000, 6000)
+	# We only need it to update once for the screenshoot
+	sub_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+	# Move it to the place we want to take the screenshoot
+	sub_viewport.canvas_transform.origin = Vector2(0, 0)
+	# Wait for the next frame to render
+	await RenderingServer.frame_post_draw
+	# Grab the image, save it and free the SubViewport
+	var img = sub_viewport.get_texture().get_image()
+	img.save_png("res://screenshot33.png")
+	sub_viewport.queue_free()
+	#var n = get_tree().root as Viewport
+	#n.set_min_size(Vector2(4096,4096))
+	#n.get_texture().get_image().save_png("user://snapshotNN.png")
+
+func capture_subviewport_region(region_position: Vector2, region_size: Vector2):
+	var subviewport : SubViewport = $CanvasLayer/SubViewportContainer/SubViewport
+	var rect = ColorRect.new()
+	rect.color = Color.RED
+	rect.size = Vector2(200, 200)
+	subviewport.add_child(rect)
+
+	var full_image = subviewport.get_texture().get_image()
+
+	# Ensure the image is loaded properly
+	if full_image.is_empty():
+		print("Failed to get image from SubViewport.")
+		return
+
+	# Crop the image to the specified region
+	var cropped_image = full_image.get_region(Rect2(region_position, region_size))
+
+	# Save the cropped image
+	cropped_image.save_png("user://snapshot_region.png")
+	print("Saved cropped region snapshot!")
+
+
+
 
 
 #func _on_properties_panel_text_change(new_text: String) -> void:

@@ -19,8 +19,11 @@ func _input(event: InputEvent) -> void:
 		is_selected = false
 
 
+
+
 func _ready() -> void:
 	if main_node :
+		option_button.visible = false
 		main_node.connect("send_reqtangle_coord",_on_send_rectangle_cord)
 	#if connection_1 and connection_2 :
 		#points[0] = connection_1.global_position
