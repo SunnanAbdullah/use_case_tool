@@ -7,6 +7,8 @@ class_name Connection extends Line2D
 
 @onready var collision_shape_2d: CollisionShape2D = $Area2D/CollisionShape2D
 @onready var option_button: OptionButton = $OptionButton
+@onready var sprite_2d: Sprite2D = $Sprite2D
+@onready var sprite_2d_2: Sprite2D = $Sprite2D2
 
 
 const DOTTED_LINE_TEST_32_PX = preload('res://graphics/dotted_line_test_32px.png')
@@ -59,6 +61,13 @@ func _process(_delta: float) -> void:
 		var point2 = get_boundary_point(center2, size2, -dir)
 		points[0] = point1
 		points[1] = point2
+		var direction = point2 - point1
+		var angle = direction.angle()
+		sprite_2d.position = point1
+		sprite_2d_2.position = point2
+		sprite_2d.rotation = angle + (PI/2)
+		#print("angle"+ str(type_string(angle)))
+		sprite_2d_2.rotation = angle + ((3 * PI)/2) 
 		option_button.position = (point1 + point2)/2
 
 	if is_selected :

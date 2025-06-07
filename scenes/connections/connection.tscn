@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://cji1quhrkolns"]
+[gd_scene load_steps=4 format=3 uid="uid://cji1quhrkolns"]
 
 [ext_resource type="Script" uid="uid://do5xekmx8hki0" path="res://scenes/connections/connection.gd" id="1_bgeee"]
+[ext_resource type="Texture2D" uid="uid://doqhw7d60eyqf" path="res://graphics/newbie.png" id="2_0hr2x"]
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_bgeee"]
 custom_solver_bias = 1.0
@@ -30,6 +31,18 @@ popup/item_0/text = "normal"
 popup/item_0/id = 0
 popup/item_1/text = "dotted"
 popup/item_1/id = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_0hr2x")
+region_enabled = true
+region_rect = Rect2(175, 184.5, 150, 149)
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_0hr2x")
+region_enabled = true
+region_rect = Rect2(176, 185.329, 147, 147.945)
 
 [connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]
 [connection signal="item_selected" from="OptionButton" to="." method="_on_option_button_item_selected"]

@@ -14,6 +14,7 @@ script = ExtResource("1_1sjem")
 position = Vector2(676, 340)
 
 [node name="Icon" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(597, 267)
 scale = Vector2(10.1328, 9.34375)
 texture = ExtResource("2_jv0e6")
