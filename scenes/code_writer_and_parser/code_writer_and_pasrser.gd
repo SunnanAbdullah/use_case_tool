@@ -1,6 +1,9 @@
 class_name CodeParser extends Window
 
 
+signal send_parsed_data_to_main_scene(use_case_array: Array, actor_array: Array, connection_array: Array)
+
+
 @onready var code_edit: CodeEdit = $CodeEdit
 
 var use_case_array : Array = [];
@@ -24,6 +27,7 @@ func _on_button_pressed() -> void:
 		print("Line %d: %s" % [i + 1, line_text])
 		parse2(line_text)
 		#tokenizer(line_text)
+	emit_signal("send_parsed_data_to_main_scene",use_case_array,actor_array,connection_array)
 
 
 func tokenizer(line: String):
@@ -70,8 +74,13 @@ func parse2(line: String) -> void:
 		var connection_type = result.get_string(1)
 		var from_node = result.get_string(2)
 		var to_node = result.get_string(3)
-		print((actor_array.has(from_node) or use_case_array.has(from_node)))
+		#print((actor_array.has(from_node) or use_case_array.has(from_node)))
 		if (actor_array.has(from_node) or use_case_array.has(from_node)) and (actor_array.has(to_node) or use_case_array.has(to_node)) :
+			connection_array.push_back({
+				"connection_type": connection_type,
+				"from_node": from_node,
+				"to_node": to_node,
+			})
 			print("Creating connection of type:", connection_type, "between:", from_node, "and", to_node)
 		return
 

@@ -15,6 +15,7 @@ signal request_for_connection(itself:Canvas_Item)
 const STICKMAN = preload('res://graphics/stickman.png')
 const USE_CASE = preload('res://graphics/use_case.png')
 
+@export var text_display : String = ""
 @export var main_node : Node2D
 @export var padding: Vector2 = Vector2(20, 40) # extra space around the text
 @export var opacity : float = 1.0
@@ -49,6 +50,8 @@ func _input(event: InputEvent) -> void:
 
 func _ready() -> void:
 	label.text = myname
+	if not text_display.is_empty():
+		label.text = text_display
 ## This below equation draws the collision shape for changing size of image
 	if collision_shape_2d.shape != null :
 		collision_shape_2d.shape = collision_shape_2d.shape.duplicate()

@@ -148,6 +148,190 @@ func _on_canvas_item_request_for_connection(itself: Canvas_Item):
 
 
 
+var occupied_areas := []
+var current_col := 0
+var current_row := 0
+const start_x := 100
+const start_y := 100
+const padding := 40
+const column_width := 300
+const row_height := 180
+var actor_left := true # Set to false to place actors on the right side
+
+# Helper: Get a valid, non-overlapping position for use cases
+func get_valid_position(item_size: Vector2) -> Vector2:
+	while true:
+		var pos = Vector2(start_x + current_col * column_width, start_y + current_row * row_height)
+		var item_rect = Rect2(pos, item_size)
+		var overlaps = false
+		for rect in occupied_areas:
+			if rect.intersects(item_rect):
+				overlaps = true
+				break
+		if not overlaps:
+			occupied_areas.append(item_rect)
+			return pos
+		current_col += 1
+		if current_col > 4:
+			current_col = 0
+			current_row += 1
+	return Vector2.ZERO
+
+# Helper: Get position for vertically stacked actors on left or right
+func get_actor_position(index: int) -> Vector2:
+	var x = 50 if actor_left else (start_x + 4 * column_width)
+	var y = start_y + index * (130 + padding)
+	return Vector2(x, y)
+
+# Helper: Create and position an item
+func create_item(canvas_item_name: String, is_dynamic: bool, type: String, index := 0) -> Canvas_Item:
+	var item_instance = CANVAS_ITEM.instantiate() as Canvas_Item
+	item_instance.itself = item_instance
+	item_instance.main_node = main
+	item_instance.connect("item_selected", _on_canvas_item_item_selected)
+	item_instance.connect("request_for_connection", _on_canvas_item_request_for_connection)
+	item_instance.myname = type
+	item_instance.text_display = canvas_item_name
+
+	var item_size : Vector2 = Vector2.ZERO
+	if is_dynamic:
+		item_size = Vector2(50 + canvas_item_name.length() * 10, 100)
+	else:
+		item_size = Vector2(130, 130)
+
+	if type == "stickman":
+		item_instance.position = get_actor_position(index)
+	else:
+		item_instance.position = get_valid_position(item_size)
+
+	canvas_item_collection.add_child(item_instance)
+	return item_instance
+
+# Main Function: Populate the canvas
+func populate_canvas(use_case_array: Array, actor_array: Array, connection_item_array: Array) -> void:
+	occupied_areas.clear()
+	current_col = 0
+	current_row = 0
+	var object_map = {}
+
+	# Add actors (fixed), vertically aligned on left or right
+	for i in actor_array.size():
+		var actor_item = create_item(actor_array[i], false, "stickman", i)
+		object_map[actor_array[i]] = actor_item
+
+	# Add use cases (dynamic)
+	for usecase_name in use_case_array:
+		var usecase_item = create_item(usecase_name, true, "use_case")
+		object_map[usecase_name] = usecase_item
+
+	# Add connections
+	for conn in connection_item_array:
+		var from_name = conn.get("from_node")
+		var to_name = conn.get("to_node")
+		var connection_type = conn.get("connection_type")
+
+		if object_map.has(from_name) and object_map.has(to_name):
+			var connection_instance = CONNECTION.instantiate() as Connection
+			connection_instance.main_node = main
+			connection_instance.connection_1 = object_map[from_name]
+			connection_instance.connection_2 = object_map[to_name]
+			connection_instance.connection_type = connection_type
+			canvas_connection_collection.add_child(connection_instance)
+
+#var occupied_areas := []
+#var current_col := 0
+#var current_row := 0
+#const start_x := 100
+#const start_y := 100
+#const padding := 40
+#const column_width := 300
+#const row_height := 180
+#
+## Helper: Get a valid, non-overlapping position
+#func get_valid_position(item_size: Vector2) -> Vector2:
+	#while true:
+		#var pos = Vector2(start_x + current_col * column_width, start_y + current_row * row_height)
+		#var item_rect = Rect2(pos, item_size)
+		#var overlaps = false
+		#for rect in occupied_areas:
+			#if rect.intersects(item_rect):
+				#overlaps = true
+				#break
+		#if not overlaps:
+			#occupied_areas.append(item_rect)
+			#return pos
+		#current_col += 1
+		#if current_col > 4:
+			#current_col = 0
+			#current_row += 1
+	#return Vector2.ZERO
+#
+## Helper: Create and position an item
+#func create_item(canvas_item_name: String, is_dynamic: bool, type: String) -> Canvas_Item:
+	#var item_instance = CANVAS_ITEM.instantiate() as Canvas_Item
+	#item_instance.itself = item_instance
+	#item_instance.main_node = main
+	#item_instance.connect("item_selected", _on_canvas_item_item_selected)
+	#item_instance.connect("request_for_connection", _on_canvas_item_request_for_connection)
+	#if type == "stickman":
+		#item_instance.myname = type
+		#item_instance.text_display = canvas_item_name
+	#elif type == "use_case":
+		#item_instance.myname = type
+		#item_instance.text_display = canvas_item_name
+	#var item_size : Vector2 = Vector2.ZERO
+	#if is_dynamic :
+		#item_size = Vector2(50 + canvas_item_name.length() * 10, 100)
+	#elif  not is_dynamic :
+		#item_size = Vector2(130, 130)
+	##var item_size: Vector2 = is_dynamic \
+		##? Vector2(50 + name.length() * 10, 100) \
+		##: Vector2(130, 130)
+#
+	#item_instance.position = get_valid_position(item_size)
+	#canvas_item_collection.add_child(item_instance)
+	#return item_instance
+#
+## Main Function: Populate the canvas
+#func populate_canvas(use_case_array: Array, actor_array: Array, connection_item_array: Array) -> void:
+	#occupied_areas.clear()
+	#current_col = 0
+	#current_row = 0
+	#var object_map = {}
+#
+	## Add actors (fixed)
+	#for actor_name in actor_array:
+		#var actor_item = create_item(actor_name, false,"stickman")
+		#object_map[actor_name] = actor_item
+#
+	## Add use cases (dynamic)
+	#for usecase_name in use_case_array:
+		#var usecase_item = create_item(usecase_name, true,"use_case")
+		#object_map[usecase_name] = usecase_item
+#
+	## Add connections
+	#for conn in connection_item_array:
+		#var from_name = conn.get("from_node")
+		#var to_name = conn.get("to_node")
+		#var connection_type = conn.get("connection_type")
+#
+		#if object_map.has(from_name) and object_map.has(to_name):
+			#var connection_instance = CONNECTION.instantiate() as Connection
+			#connection_instance.main_node = main
+			#connection_instance.connection_1 = object_map[from_name]
+			#connection_instance.connection_2 = object_map[to_name]
+			#connection_instance.connection_type = connection_type
+			#canvas_connection_collection.add_child(connection_instance)
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -309,3 +493,10 @@ func capture_subviewport_region(region_position: Vector2, region_size: Vector2):
 		#property_selected_item.label.text = new_text
 	#else :
 		#property_selected_item.label.text = ""
+
+
+func _on_code_writer_and_pasrser_send_parsed_data_to_main_scene(use_case_array: Array, actor_array: Array, connection_item_array: Array) -> void:
+	populate_canvas(use_case_array,actor_array,connection_item_array)
+	#print("Usecase : " , use_case_array)
+	#print("actor : " , actor_array)
+	#print("Connection : " , connection_item_array)
