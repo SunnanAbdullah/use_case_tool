@@ -215,7 +215,7 @@ func populate_canvas(use_case_array: Array, actor_array: Array, connection_item_
 	occupied_areas.clear()
 	current_col = 0
 	current_row = 0
-	var object_map = {}
+	var object_map  = {}
 
 	# Add actors (fixed), vertically aligned on left or right
 	for i in actor_array.size():
@@ -227,6 +227,7 @@ func populate_canvas(use_case_array: Array, actor_array: Array, connection_item_
 		var usecase_item = create_item(usecase_name, true, "use_case")
 		object_map[usecase_name] = usecase_item
 
+	print(object_map)
 	# Add connections
 	for conn in connection_item_array:
 		var from_name = conn.get("from_node")

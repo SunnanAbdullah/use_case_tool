@@ -4,6 +4,8 @@ class_name Connection extends Line2D
 @export var connection_2 : Canvas_Item
 @export var main_node : Node2D
 @export var is_selected : bool = true
+@export var connection_type : String = ""
+
 
 @onready var collision_shape_2d: CollisionShape2D = $Area2D/CollisionShape2D
 @onready var option_button: OptionButton = $OptionButton
@@ -24,6 +26,14 @@ func _input(event: InputEvent) -> void:
 
 
 func _ready() -> void:
+	if connection_type == "include" :
+		option_button.selected = 1
+		texture = DOTTED_LINE_TEST_32_PX_WHITE
+		width = 32
+	else :
+		texture = null
+		width = 10
+		option_button.selected = 0
 	if main_node :
 		option_button.visible = false
 		main_node.connect("send_reqtangle_coord",_on_send_rectangle_cord)
