@@ -1,6 +1,7 @@
 extends Node2D
 
 
+
 const MENU_ITEM = preload('res://scenes/menu_item/menu_item.tscn')
 const CANVAS_ITEM = preload('res://scenes/canvas_item/canvas_item.tscn')
 const CONNECTION = preload('res://scenes/connections/connection.tscn')

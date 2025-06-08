@@ -60,5 +60,4 @@ metadata/_edit_lock_ = true
 [node name="code_writer_and_pasrser" parent="." instance=ExtResource("7_eyqta")]
 
 [connection signal="item_selected" from="CanvasLayer/menu_layer" to="." method="_on_menu_layer_item_selected"]
-[connection signal="text_change" from="CanvasLayer/Properties_panel" to="." method="_on_properties_panel_text_change"]
 [connection signal="send_parsed_data_to_main_scene" from="code_writer_and_pasrser" to="." method="_on_code_writer_and_pasrser_send_parsed_data_to_main_scene"]

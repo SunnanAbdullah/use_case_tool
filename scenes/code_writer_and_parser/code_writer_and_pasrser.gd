@@ -11,6 +11,7 @@ var actor_array : Array = [];
 var connection_array : Array = [];
 
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
@@ -18,7 +19,8 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	pass
+	if Input.is_action_just_pressed('F1') :
+		visible = not visible
 
 
 func _on_button_pressed() -> void:
@@ -90,4 +92,4 @@ func parse2(line: String) -> void:
 
 
 func _on_close_requested() -> void:
-	queue_free()
+	visible = false
