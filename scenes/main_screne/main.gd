@@ -42,7 +42,7 @@ func _process(_delta: float) -> void:
 	queue_redraw()
 	if Input.is_action_just_pressed('save'):
 		s()
-		capture_subviewport_region(Vector2(50, 30), Vector2(2000, 1500))
+		#capture_subviewport_region(Vector2(50, 30), Vector2(2000, 1500))
 	dropitem()
 	create_connectiona()
 	#create_connection()
@@ -452,11 +452,13 @@ func s():
 	# Use the same World2D as the main Viewport
 	sub_viewport.world_2d = get_viewport().world_2d
 	# Set its size
-	sub_viewport.size = Vector2(6000, 6000)
+	sub_viewport.size = bounding_box_properties.size.floor()
+	#sub_viewport.size = Vector2(6000, 6000)
 	# We only need it to update once for the screenshoot
 	sub_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	# Move it to the place we want to take the screenshoot
-	sub_viewport.canvas_transform.origin = Vector2(0, 0)
+	#sub_viewport.canvas_transform.origin = Vector2(0, 0)
+	sub_viewport.canvas_transform.origin = -bounding_box_properties.position.floor()
 	# Wait for the next frame to render
 	await RenderingServer.frame_post_draw
 	# Grab the image, save it and free the SubViewport
