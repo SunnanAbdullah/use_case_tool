@@ -9,6 +9,7 @@ b = Vector2(0, 0)
 
 [node name="connection" type="Line2D"]
 points = PackedVector2Array(0, 0, 0, 0)
+width = 5.0
 texture_mode = 1
 joint_mode = 2
 begin_cap_mode = 2
@@ -26,20 +27,22 @@ debug_color = Color(0.975706, 0.156124, 0, 0.42)
 [node name="OptionButton" type="OptionButton" parent="."]
 offset_right = 88.0
 offset_bottom = 31.0
-item_count = 2
-popup/item_0/text = "normal"
+item_count = 3
+popup/item_0/text = "association"
 popup/item_0/id = 0
-popup/item_1/text = "dotted"
+popup/item_1/text = "include"
 popup/item_1/id = 1
+popup/item_2/text = "extends"
+popup/item_2/id = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.25, 0.25)
 texture = ExtResource("2_0hr2x")
 region_enabled = true
 region_rect = Rect2(175, 184.5, 150, 149)
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.25, 0.25)
 texture = ExtResource("2_0hr2x")
 region_enabled = true
 region_rect = Rect2(176, 185.329, 147, 147.945)

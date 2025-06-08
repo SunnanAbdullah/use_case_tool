@@ -26,14 +26,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _ready() -> void:
-	if connection_type == "include" :
-		option_button.selected = 1
-		texture = DOTTED_LINE_TEST_32_PX_WHITE
-		width = 32
-	else :
-		texture = null
-		width = 10
-		option_button.selected = 0
+	_connection_type_setter()
 	if main_node :
 		option_button.visible = false
 		main_node.connect("send_reqtangle_coord",_on_send_rectangle_cord)
@@ -75,9 +68,11 @@ func _process(_delta: float) -> void:
 		var angle = direction.angle()
 		sprite_2d.position = point1
 		sprite_2d_2.position = point2
-		sprite_2d.rotation = angle + (PI/2)
+		#sprite_2d.rotation = angle + (PI/2)
+		sprite_2d.rotation = angle + ((3 * PI)/2)
 		#print("angle"+ str(type_string(angle)))
-		sprite_2d_2.rotation = angle + ((3 * PI)/2) 
+		#sprite_2d_2.rotation = angle + ((3 * PI)/2)
+		sprite_2d_2.rotation = angle + (PI/2)
 		option_button.position = (point1 + point2)/2
 
 	if is_selected :
@@ -154,10 +149,41 @@ func _on_send_rectangle_cord(starting_coord: Vector2, ending_coord: Vector2):
 			return
 
 
+func _connection_type_setter():
+	if connection_type == "include" :
+		sprite_2d.visible = false
+		sprite_2d_2.visible = true
+		option_button.selected = 1
+		texture = DOTTED_LINE_TEST_32_PX_WHITE
+		width = 32
+	elif connection_type == "extends" :
+		sprite_2d.visible = true
+		sprite_2d_2.visible = false
+		option_button.selected = 2
+		texture = DOTTED_LINE_TEST_32_PX_WHITE
+		width = 32
+	elif connection_type == "association" :
+		texture = null
+		width = 5
+		option_button.selected = 0
+		sprite_2d.visible = false
+		sprite_2d_2.visible = false
+
+
+
 func _on_option_button_item_selected(index: int) -> void:
 	if index == 0 :
 		texture = null
-		width = 10
+		width = 5
+		sprite_2d.visible = false
+		sprite_2d_2.visible = false
 	elif index == 1 :
 		texture = DOTTED_LINE_TEST_32_PX_WHITE
 		width = 32
+		sprite_2d.visible = false
+		sprite_2d_2.visible = true
+	elif index == 2 :
+		texture = DOTTED_LINE_TEST_32_PX_WHITE
+		width = 32
+		sprite_2d_2.visible = false
+		sprite_2d.visible = true
