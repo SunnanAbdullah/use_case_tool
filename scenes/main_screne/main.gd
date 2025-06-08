@@ -181,7 +181,10 @@ func get_valid_position(item_size: Vector2) -> Vector2:
 func get_actor_position(index: int) -> Vector2:
 	var x = 50 if actor_left else (start_x + 4 * column_width)
 	var y = start_y + index * (130 + padding)
-	return Vector2(x, y)
+	var pos = Vector2(x, y)
+	var actor_rect = Rect2(pos, Vector2(130, 130))  # Actors are fixed size
+	occupied_areas.append(actor_rect)  # Mark area as occupied
+	return pos
 
 # Helper: Create and position an item
 func create_item(canvas_item_name: String, is_dynamic: bool, type: String, index := 0) -> Canvas_Item:
@@ -196,7 +199,7 @@ func create_item(canvas_item_name: String, is_dynamic: bool, type: String, index
 	var item_size : Vector2 = Vector2.ZERO
 	if is_dynamic:
 		item_size = Vector2(50 + canvas_item_name.length() * 10, 100)
-	else:
+	elif not is_dynamic:
 		item_size = Vector2(130, 130)
 
 	if type == "stickman":
