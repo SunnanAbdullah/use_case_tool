@@ -242,6 +242,8 @@ func create_item(canvas_item_name: String, is_dynamic: bool, type: String, index
 	item_instance.itself = item_instance
 	item_instance.main_node = main
 	item_instance.connect("item_selected", _on_canvas_item_item_selected)
+	item_instance.connect("item_selected_in_group", _on_canvas_item_item_selected_in_group)
+	item_instance.connect('clear_item_selected_in_group',_on_canvas_item_clear_item_selected_in_group)
 	item_instance.connect("request_for_connection", _on_canvas_item_request_for_connection)
 	item_instance.myname = type
 	item_instance.text_display = canvas_item_name
