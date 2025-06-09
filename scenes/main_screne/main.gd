@@ -1,6 +1,8 @@
 extends Node2D
 
 
+signal send_mouse_coord_in_group(coord:Vector2)
+
 
 const MENU_ITEM = preload('res://scenes/menu_item/menu_item.tscn')
 const CANVAS_ITEM = preload('res://scenes/canvas_item/canvas_item.tscn')
@@ -14,13 +16,17 @@ const CONNECTION = preload('res://scenes/connections/connection.tscn')
 @onready var properties_panel: PropertiesPanel = $CanvasLayer/Properties_panel
 
 
+var group_dragging_dir : Vector2
+var is_in_group_selected : bool = false
 var is_mouse_busy : bool = false
 var is_drawing : bool = false
 var selected_item : Canvas_Item
 var property_selected_item : Canvas_Item
 var previous_property_selected_item : Canvas_Item
+var selected_item_in_group_array : Array[Canvas_Item] = [] 
 
 var connection_array : Array[Canvas_Item] = []
+
 
 var lp1 : Vector2 = Vector2.ZERO 
 var lp2 : Vector2 = Vector2.ZERO
@@ -38,12 +44,13 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	if canvas_item_collection.get_children():
-		bounding_box_properties = get_bounding_box(canvas_item_collection.get_children() )
+		bounding_box_properties = get_bounding_box(canvas_item_collection.get_children())
 	queue_redraw()
 	if Input.is_action_just_pressed('save'):
 		s()
 		#capture_subviewport_region(Vector2(50, 30), Vector2(2000, 1500))
 	dropitem()
+	group_dragging()
 	create_connectiona()
 	#create_connection()
 	#if selected_item :
@@ -62,6 +69,18 @@ func _process(_delta: float) -> void:
 		print (str(property_selected_item)+ " : "+ str(property_selected_item.is_selected) )
 		print ("prev : " + str(previous_property_selected_item)+ " : "+ str(previous_property_selected_item.is_selected) )
 
+
+
+func group_dragging():
+	print(Input.get_last_mouse_velocity().normalized())
+	if not is_mouse_busy and is_in_group_selected and Input.is_action_pressed('space'):
+		emit_signal('send_mouse_coord_in_group',Input.get_last_mouse_velocity().normalized() * 6)
+	
+	#for canvas_item in selected_item_in_group_array :
+		#if not canvas_item.main_node.is_connected('send_mouse_coord_in_group',_on_send_mouse_coord_in_group):
+			#canvas_item.main_node.connect('send_mouse_coord_in_group',_on_send_mouse_coord_in_group)
+		#if not canvas_item.is_connected('send_mouse_coord_in_group',_on_send_mouse_coord_in_group):
+		#canvas_item.main_node.connect('send_mouse_coord_in_group',_on_send_mouse_coord_in_group) if not canvas_item.is_connected('send_mouse_coord_in_group',_on_send_mouse_coord_in_group) else true 
 
 func dropitem():
 	if is_mouse_busy and not is_drawing :
@@ -113,6 +132,8 @@ func _on_menu_layer_item_selected(item_name: String) -> void:
 		item_instance.itself = item_instance
 		item_instance.main_node = main
 		item_instance.connect('item_selected', _on_canvas_item_item_selected)
+		item_instance.connect("item_selected_in_group", _on_canvas_item_item_selected_in_group)
+		item_instance.connect('clear_item_selected_in_group',_on_canvas_item_clear_item_selected_in_group)
 		item_instance.connect('request_for_connection',_on_canvas_item_request_for_connection)
 		#item_instance.connect('request_for_properties_panel',_on_canvas_item_request_for_properties_panel)
 		item_instance.myname = item_name
@@ -131,6 +152,34 @@ func _on_canvas_item_item_selected(_item_name: String, itself: Canvas_Item) -> v
 	is_mouse_busy = true
 	selection_drawing.is_mouse_busy = is_mouse_busy
 
+
+func _on_canvas_item_item_selected_in_group(itself: Canvas_Item):
+	if not itself.main_node.is_connected('send_mouse_coord_in_group',_on_send_mouse_coord_in_group):
+		itself.main_node.connect('send_mouse_coord_in_group',_on_send_mouse_coord_in_group)
+	if not selected_item_in_group_array.has(itself) :
+		selected_item_in_group_array.append(itself)
+	#print(selected_item_in_group_array)
+	if selected_item_in_group_array.size() >= 2 :
+		is_in_group_selected = true
+	elif selected_item_in_group_array.size() < 2 :
+		is_in_group_selected = false
+
+
+func _on_send_mouse_coord_in_group(coord: Vector2):
+	for canvas_item in selected_item_in_group_array :
+		canvas_item.position += coord
+
+
+func _on_canvas_item_clear_item_selected_in_group(itself: Canvas_Item):
+	if selected_item_in_group_array.has(itself) :
+		#if itself.is_connected('send_mouse_coord_in_group',_on_send_mouse_coord_in_group):
+			#itself.disconnect('send_mouse_coord_in_group',_on_send_mouse_coord_in_group)
+		selected_item_in_group_array.erase(itself)
+	#print(selected_item_in_group_array)
+	if selected_item_in_group_array.size() >= 2 :
+		is_in_group_selected = true
+	elif selected_item_in_group_array.size() < 2 :
+		is_in_group_selected = false
 
 #func _on_canvas_item_request_for_properties_panel(itself: Canvas_Item):
 	#property_selected_item = itself

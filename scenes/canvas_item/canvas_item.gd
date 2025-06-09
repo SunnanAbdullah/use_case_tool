@@ -2,6 +2,8 @@ class_name Canvas_Item extends Area2D
 
 
 signal item_selected(item_name:String, itself:Canvas_Item)
+signal item_selected_in_group(itself: Canvas_Item)
+signal clear_item_selected_in_group(itself: Canvas_Item)
 signal request_for_connection(itself:Canvas_Item)
 #signal request_for_properties_panel(itself: Canvas_Item)
 
@@ -39,6 +41,7 @@ func _input(event: InputEvent) -> void:
 		self.queue_free()
 	if event is InputEventMouseButton and is_selected and event.button_index == MOUSE_BUTTON_RIGHT :
 		is_selected = false
+		emit_signal("clear_item_selected_in_group",itself)
 	if event is InputEventMouseButton  and is_mouse_entered:
 		if event.is_action_pressed('left_click') :
 			#print("llllllllllllllllllllllllllllllllllllllllll")
@@ -149,14 +152,17 @@ func _on_send_rectangle_cord(starting_coord: Vector2, ending_coord: Vector2):
 # Full containment check
 	if ( box_min_x >= min_x and box_max_x <= max_x and box_min_y >= min_y and box_max_y <= max_y):
 		is_selected = true
+		emit_signal('item_selected_in_group',itself)
 		#print("Collision box is fully inside the custom rectangle.")
 	# Partial intersection check
 	elif not ( box_max_x < min_x or box_min_x > max_x or box_max_y < min_y or box_min_y > max_y ):
 		is_selected = true
+		emit_signal('item_selected_in_group',itself)
 		#print("Collision box is partially inside the custom rectangle.")
 	# No overlap
 	else:
 		is_selected = false
+		emit_signal("clear_item_selected_in_group",itself)
 		#print("Collision box is completely outside the custom rectangle.")
 
 
